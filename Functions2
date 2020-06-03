@@ -1,0 +1,354 @@
+#threshold a for uniform distribution 
+n <- 5
+pdf <- function(a,b,c,d)
+{
+  (d-c)/(b-a)
+}
+pdf(0,1,0,1)
+min = 0
+maxx = 1
+f22 <- function(x)
+{
+  qunif(x, min=min, max=maxx)
+}
+integrate(f22, lower = 0, upper = 0.5)$value
+qunif(0.1, min=0, max=1, lower.tail = FALSE)
+EV <- function(a,b)
+{
+  (b-a)/2
+}
+r=c(0,0.1,0.3,0.5,0.8,50)
+SelectedTime = c(9,28,28,28,28,28 )
+r
+plot(r,SelectedTime)
+lines(r,SelectedTime)
+a<- rep(NA,n)
+a
+c=0
+d=1
+a[n] <- EV(0,1)
+a
+for(k in (n-1):1)
+{
+  #a[k] = (1/(1+0))*a[[k+1]]*(1-pdf(0,1,0,a[[k+1]]))+pdf(0,1,0,(a[[k+1]]))
+  #a[k] = a[[k+1]]*(1-pdf(0,1,0,a[[k+1]]))-pdf(0,1,0,(a[[k+1]]))
+  a[k] =1/(1+0)* a[[k+1]]*(1-f22(a[[k+1]]))+integrate(f22, lower = 0, upper = a[[k+1]])$value
+}
+a
+plot(a)
+lines(a)
+uniformVstarValues<- function(c)
+{
+  if(c<=0.5){
+    v= 1-((2*c)^0.5)
+    
+  }
+  else
+  {
+    v = -c + (0.5)
+  }
+  return(v)
+}
+uniformVstarValues(0.2)
+
+#relative ranking
+relrank <- function(x) {
+  output <- rep(NA,length(x))
+  # take vector and find relative ranks, if sequentially disclosed
+  for (i in seq_len(length(x))) {
+    output[i] <- sum(x[1:i] <= x[i])
+  }
+  return(output)
+}
+
+Selection <- function(s,n) {
+  y <- relrank(x)
+  idxSelect <- which.max(y <= s)
+  return(c(rank=x[idxSelect],idx=idxSelect,isBest=(x[idxSelect]==1)))
+}
+
+strategy_best <- function(n) {
+  r <- ceiling(n * 1 / exp(1))
+  s <- c(rep(0,r-1),rep(1,n-(r-1)-1),n)
+  return(s)
+}
+
+strategy_erank <- function(n) {
+  c <- s <- rep(NA,n)
+  idx <- function(i) {i+1}
+  c[idx(n-1)] <- (n+1)/2
+  s[idx(n)] <- n
+  
+  for (i in (n-1):1) {
+    s[idx(i)]   <- floor( (i+1)/(n+1)*c[idx(i)])
+    c[idx(i)-1] <- 1/i * ( (n+1)/(i+1)*s[idx(i)]*(s[idx(i)]+1)/2 + (i-s[idx(i)])*c[idx(i)])
+  }
+  
+  return(list(s=s,c=c))
+}
+datafreshness <- function(z)
+{
+  f=rep(NA,z)
+  f[1]=1
+  for (i in 2:length(f))
+  {
+    f[i]= f[i-1]-1/z
+  }
+  return(f)
+}
+
+sigma = 10
+mu = 50
+epsilon = 0.01
+VSTAR <- NULL
+COST <- NULL
+MMAX = mu+50
+MMIN = 1
+x=40
+for(c in seq(from=MMIN, to=140, by=1))
+  
+{
+  
+  for(v in seq(from=MMIN, to=MMAX, by=0.01))
+    
+  {
+    
+    f1 <- function(x)
+      
+    {
+      
+      x*(1/sqrt(2*pi*sigma^2))*exp(-((x-mu)^2)/(2*sigma^2))
+      
+    }
+    
+    first <- integrate(f1, lower = v, upper = MMAX)$value
+    
+    f2 <- function(x)
+      
+    {
+      
+      (1/sqrt(2*pi*sigma^2))*exp(-((x-mu)^2)/(2*sigma^2))
+      
+    }
+    
+    second <- integrate(f2, lower = v, upper = MMAX)$value
+    
+    first
+    
+    second
+    
+    value = (first-v*second-c)
+    
+    value
+    
+    v
+    
+    if(abs(value)<epsilon)
+      
+    {
+      
+      VSTAR = rbind(VSTAR,data.frame(v))
+      
+      print(v)
+      
+      COST = rbind(COST,data.frame(c))
+      
+      break
+      
+    }
+    
+  }
+  
+}
+
+mu=50
+sigma= 10
+f22 <- function(x)
+{
+  (1/sqrt(2*pi*sigma^2))*exp(-((x-mu)^2)/(2*sigma^2))
+}
+n=30
+a<- rep(NA,n)
+a
+a[n] <-  48
+a
+for(k in (n-1):1)
+{
+  a[k] =1/(1+0)* a[[k+1]]*(1-f22(a[[k+1]]))+integrate(f22, lower = 0, upper = Inf)$value
+}
+datafreshness(10)
+plot(a)
+lines(a)
+a
+x= rnorm(n,50,sigma)
+
+user
+plot(a,xlab="Observations ", ylab="",xlim=c(1,30),ylim=c(30,70),
+     pch=18, col="red", col.axis = 'black', col.lab = 'black',cex.axis = 1,cex.lab=1.5)
+lines(a, col = "red")
+points(x,col="blue", col.axis = 'blue',col.lab = 'blue',pch=10,cex.lab=1,cex.axis = 1)
+lines(x,col = "blue")
+legend(15, 70, legend=c("a values", "processing time"),
+       col=c("red", "blue"), lty=1, cex=0.8, bty="l")
+x = 49
+p =1-pnorm(x, mean=50, sd=10,lower.tai= FALSE) 
+p
+1-p
+N=5
+ODDS = rep(0,N)
+Q = rep(0,N)
+plot(ODDS)
+for(n in N:1)
+{
+  ODDS[n] = (p*(N+1)-p*n)/((1-p)*(N+1)+p*n)
+  print(n)
+  cat("Odd")
+  print(ODDS[n])
+  Q[n] = 1 - p*((N+1-n)/(N+1))
+  cat("Q")
+  print(Q[n])
+  
+}
+
+W=1
+SUM = 0
+cutlooking= 0
+for(t in N:1)
+{
+  SUM = SUM + ODDS[t]
+  print(SUM)
+  W = W * Q[t]
+  print(W)
+  if(SUM>=1)
+  {
+    cutlooking=t
+    break
+  }
+  
+}
+y=W*Q[4]
+y
+plot(y)
+plot(Q)
+if(SUM<1)
+{
+  cutlooking=1
+}
+
+x=0.5
+p =1-qunif(x, min=0, max=1, lower.tail = FALSE)
+p
+1-p
+N=5
+ODDS = rep(0,N)
+Q = rep(0,N)
+plot(ODDS)
+for(n in N:1)
+{
+  ODDS[n] = (p*(N+1)-p*n)/((1-p)*(N+1)+p*n)
+  print(n)
+  cat("Odd")
+  print(ODDS[n])
+  Q[n] = 1 - p*((N+1-n)/(N+1))
+  cat("Q")
+  print(Q[n])
+  
+}
+
+ =1
+SUM = 0
+cutlooking= 0
+for(t in N:1)
+{
+  SUM = SUM + ODDS[t]
+  print(SUM)
+  W = W * Q[t]
+  print(W)
+  if(SUM>=1)
+  {
+    cutlooking=t
+    break
+  }
+  
+}
+y=W*Q[4]*1.4
+y
+plot(y)
+plot(Q)
+if(SUM<1)
+{
+  cutlooking=1
+}
+meanProessingTimeOP = 38
+sdProcessingTimeOP = 6.35
+meanProessingTimeSP = 46
+sdProcessingTimeSP = 9.7
+meanProessingTimeHS = 41
+sdProcessingTimeHS = 7
+meanProessingTimeINFH = 42
+sdProcessingTimeINFH = 7
+meanProessingTimeOdd = 42
+sdProcessingTimeOdd = 6.5
+meanProessingTimeRand = 50
+sdProcessingTimeRand = 10
+meanProessingTimeRand = 50
+meanProessingTimePmodel = 49.5
+sdProcessingTimePmodel = 10
+
+meanProessingTimeOP = 33
+sdProcessingTimeOP = 12
+meanProessingTimeSP = 52
+sdProcessingTimeSP = 23
+meanProessingTimeRand = 61
+sdProcessingTimeRand = 23
+meanProessingTimePmodel = 61
+sdProcessingTimePmodel = 25
+
+meansAll<-c(meanProessingTimeOP, meanProessingTimeSP,meanProessingTimeRand, meanProessingTimePmodel)
+sdAll<-c(sdProcessingTimeOP,sdProcessingTimeSP,sdProcessingTimeRand,sdProcessingTimePmodel)
+nn = 50
+ciw   <- qt(0.95, nn) * sdAll / sqrt(nn)
+plotCI(x=meansAll, uiw=ciw, main="Confidence Interval",xlab="Models", ylab="Processing Time",
+       pch=10, col="black", col.axis = 'black', col.lab = 'black',cex.axis = 1.5, cex.lab = 1,
+       font = 2,axes=FALSE,lwd=2)
+axis(side=1,at=1:4,label=c("Opt.","BCP","Random","P-model"),font=2)
+axis(side=2,at=10:70,font=2)
+
+plotCI(x=meansAll, uiw=ciw, main="Confidence Interval",xlab="Models", ylab="Server Utilization",
+       pch=10, col="black", col.axis = 'black', col.lab = 'black',cex.axis = 1.5, cex.lab = 1,
+       font = 2,axes=FALSE,lwd=2)
+axis(side=1,at=1:7,label=c("Opt.","DTO","COT c=4","Odds","BCP","Random","p=0.8"),font=2)
+axis(side=2,at=10:70,font=2)
+
+n <- 30L
+pdf <- function(a,b,c,d)
+{
+  (d-c)/(b-a)
+}
+pdf(0,40,0,40)
+EV <- function(a,b)
+{
+  (b-a)/2
+}
+r=c(0,0.1,0.3,0.5,0.8,50)
+SelectedTime = c(9,28,28,28,28,28 )
+r
+plot(r,SelectedTime)
+lines(r,SelectedTime)
+a<- rep(NA,n)
+a
+c
+a[n] <-  (1/(1+0))*pdf(1,30,1,30)*EV(1,30)
+a
+for(k in (n-1):1)
+{
+  a[k] = (1/(1+0))*a[[k+1]]*(1-pdf(1,30,1,a[[k+1]]))+pdf(1,30,1,(a[[k+1]]))
+}
+a
+plot(a)
+lines(a)
+load = runif(30, min = 1, max = 20)
+points(load)
+lines(load)
+b= runif(30, min=1, max= 20)
+b
